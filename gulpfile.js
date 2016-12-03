@@ -8,6 +8,7 @@ var reactify = require("reactify"); // Transforms JSX to JS
 var source = require("vinyl-source-stream"); // Use text streams with Gulp
 var concat = require("gulp-concat"); // Concatenates files
 var eslint = require("gulp-eslint"); // Lint JS files including JSX files
+var nodemon = require('gulp-nodemon'); // Node server auto refresh
 
 // Configurations
 var config = {
@@ -18,6 +19,7 @@ var config = {
         js: './src/**/*.jsx',
         images: './src/images/*',
         mainjs: './src/main.jsx',
+        serverjs: './src/server.js',
         css: [
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
             'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
@@ -36,8 +38,23 @@ gulp.task('connect', function () {
     });
 });
 
+// Start a local node server to provide a catch all for routes to overcome problems using browserHistory in React
+gulp.task('startServer', function () {
+    var serverOptions = {
+        script: './dist/server.js',
+        delayTime: 0,
+        env: {
+            'PORT': 5015
+        }
+    };
+    return nodemon(serverOptions)
+        .on('restart', function (ev) {
+            console.log('Restarting ....');
+        });
+});
+
 // Open URL in web browser
-gulp.task('open', ['connect'], function () {
+gulp.task('open', ['startServer'], function () {
     gulp.src('dist/index.html').pipe(open({
         uri: config.devBaseUrl + ":" + config.port + '/'
     }));
@@ -57,6 +74,9 @@ gulp.task('js', function () {
         .pipe(source('bundle.js'))
         .pipe(gulp.dest(config.paths.dist + '/scripts'))
         .pipe(connect.reload());
+
+    gulp.src(config.paths.serverjs)
+        .pipe(gulp.dest(config.paths.dist));
 });
 
 gulp.task('css', function () {
