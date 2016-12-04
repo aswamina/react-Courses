@@ -54,7 +54,7 @@ gulp.task('startServer', function () {
 });
 
 // Open URL in web browser
-gulp.task('open', ['startServer'], function () {
+gulp.task('open', ['connect'], function () {
     gulp.src('dist/index.html').pipe(open({
         uri: config.devBaseUrl + ":" + config.port + '/'
     }));
