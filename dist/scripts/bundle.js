@@ -52606,7 +52606,46 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./common/header.jsx":245,"jquery":43,"react":234,"react-router":202}],243:[function(require,module,exports){
+},{"./common/header.jsx":247,"jquery":43,"react":234,"react-router":202}],243:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var TextInput = require('../common/textInput.jsx');
+
+var AuthorForm = React.createClass({displayName: "AuthorForm",
+   render: function() {
+       return(
+           React.createElement("form", null,
+               React.createElement(TextInput, {
+                   name: "firstName",
+                   label: "First Name",
+                   value: this.props.author.firstName,
+                   onChange: this.props.onChange}
+                ),
+
+               React.createElement(TextInput, {
+                   name: "lastName",
+                   label: "Last Name",
+                   value: this.props.author.lastName,
+                   onChange: this.props.onChange}
+               ),
+
+               React.createElement("br", null),
+
+               React.createElement("input", {
+                   type: "submit",
+                   value: "Save",
+                   className: "btn btn-default",
+                   onClick: this.props.onSave}
+                )
+           )
+       );
+   }
+});
+
+module.exports = AuthorForm;
+
+},{"../common/textInput.jsx":248,"react":234}],244:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -52642,10 +52681,11 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList;
 
-},{"react":234}],244:[function(require,module,exports){
+},{"react":234}],245:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
+var Link = require('react-router').Link;
 var AuthorApi = require('../../api/authorAPI.jsx');
 var AuthorList = require('./authorList.jsx');
 
@@ -52664,6 +52704,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
         return (
             React.createElement("div", null, 
                 React.createElement("h1", null, "Authors"), 
+                React.createElement(Link, {to: "addAuthor", className: "btn btn-default"}, "Add Author"),
                 React.createElement(AuthorList, {authors: this.state.authors})
             )
         );
@@ -52672,7 +52713,41 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage;
 
-},{"../../api/authorAPI.jsx":237,"./authorList.jsx":243,"react":234}],245:[function(require,module,exports){
+},{"../../api/authorAPI.jsx":237,"./authorList.jsx":244,"react":234,"react-router":202}],246:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var AuthorForm = require('./authorForm.jsx');
+var AuthorAPI = require('../../api/authorAPI.jsx');
+
+var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
+    getInitialState: function() {
+        return { author: {id:'', firstName:'', lastName:''}};
+    },
+    setAuthorState: function(event) {
+        var field = event.target.name;
+        var value = event.target.value;
+        this.state.author[field] = value;
+        return this.setState({author: this.state.author});
+    },
+    saveAuthor: function(event) {
+        event.preventDefault();
+        AuthorAPI.saveAuthor(this.state.author);
+        this.transitionTo('authors');
+    },
+    render: function() {
+        return(
+            React.createElement("div", null,
+                React.createElement("h1", null, "Manage Author Page"),
+                React.createElement(AuthorForm, {author: this.state.author, onChange: this.setAuthorState, onSave: this.saveAuthor})
+            )
+        );
+    }
+});
+
+module.exports = ManageAuthorPage;
+
+},{"../../api/authorAPI.jsx":237,"./authorForm.jsx":243,"react":234}],247:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -52699,7 +52774,48 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header;
 
-},{"../NavLink.jsx":239,"react":234,"react-router":202}],246:[function(require,module,exports){
+},{"../NavLink.jsx":239,"react":234,"react-router":202}],248:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+var textInput = React.createClass({displayName: "textInput",
+    propTypes: {
+        name: React.PropTypes.string.isRequired,
+        label: React.PropTypes.string.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        placeholder: React.PropTypes.string,
+        value: React.PropTypes.string,
+        error: React.PropTypes.string
+    },
+    render: function() {
+        var wrapperClass = 'form-group';
+        if (this.props.error && this.props.error.length > 0) {
+            wrapperClass += " " + 'has-error';
+        }
+        return (
+            React.createElement("div", {className: wrapperClass},
+               React.createElement("label", {htmlFor: this.props.name}, this.props.label),
+                React.createElement("div", {className: "field"},
+                    React.createElement("input", {
+                        type: "text",
+                        name: this.props.name,
+                        className: "form-control",
+                        placeholder: this.props.placeholder,
+                        ref: this.props.name,
+                        onChange: this.props.onChange,
+                        value: this.props.value}
+                    )
+                ),
+                React.createElement("div", {className: "input"}, this.props.error)
+            )
+        );
+    }
+});
+
+module.exports = textInput;
+
+},{"react":234}],249:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -52717,7 +52833,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home;
 
-},{"react":234}],247:[function(require,module,exports){
+},{"react":234}],250:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -52757,7 +52873,7 @@ Router.run(routes, function(Handler) {
 */
 // ReactDOM.render(<App/> , document.getElementById('app'));
 
-},{"./routes.jsx":248,"react":234,"react-dom":48,"react-router":202}],248:[function(require,module,exports){
+},{"./routes.jsx":251,"react":234,"react-dom":48,"react-router":202}],251:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -52772,11 +52888,13 @@ var Home = require('./components/homePage.jsx');
 var About = require('./components/about/aboutPage.jsx');
 var Authors = require('./components/authors/authorPage.jsx');
 var FourOFour = require('./components/PageNotFound.jsx');
+var ManageAuthorPage = require('./components/authors/manageAuthorPage.jsx');
 
 var routes = (
     React.createElement(Route, {path: "/", component: App},
         React.createElement(IndexRoute, {component: Home}),
         React.createElement(Route, {path: "authors", component: Authors}), 
+        React.createElement(Route, {path: "addAuthor", component: ManageAuthorPage}),
         React.createElement(Route, {path: "about", component: About}),
         React.createElement(Route, {path: "*", component: FourOFour}),
         React.createElement(Redirect, {from: "/*", to: "about"})
@@ -52785,4 +52903,4 @@ var routes = (
 
 module.exports = routes;
 
-},{"./components/PageNotFound.jsx":240,"./components/about/aboutPage.jsx":241,"./components/app.jsx":242,"./components/authors/authorPage.jsx":244,"./components/homePage.jsx":246,"react":234,"react-router":202}]},{},[247]);
+},{"./components/PageNotFound.jsx":240,"./components/about/aboutPage.jsx":241,"./components/app.jsx":242,"./components/authors/authorPage.jsx":245,"./components/authors/manageAuthorPage.jsx":246,"./components/homePage.jsx":249,"react":234,"react-router":202}]},{},[250]);
