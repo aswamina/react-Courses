@@ -52733,7 +52733,27 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
     saveAuthor: function(event) {
         event.preventDefault();
         AuthorAPI.saveAuthor(this.state.author);
-        this.transitionTo('authors');
+        this.sendFormData();
+        // Uncomment below to post the author data to the server for persistence
+        // this.setState({type: 'hello' }, this.sendFormData);
+    },
+    sendFormData: function () {
+        fetch('/postAuthor', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: this.state.author.id,
+                firstName: this.state.author.firstName,
+                lastName: this.state.author.lastName
+            })
+        });
+        /*.then(function(responseObj) {
+            window.location.href = '/authors';
+        });
+        */
     },
     render: function() {
         return(
