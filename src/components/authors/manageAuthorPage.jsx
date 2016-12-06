@@ -12,14 +12,35 @@ var ManageAuthorPage = React.createClass({
     getInitialState: function() {
         return {
             author: {id:'', firstName:'', lastName:''},
-            errors: {}
+            errors: {},
+            isSaved: false
         };
+    },
+    componentWillMount: function() {
+        var authorId = this.props.params.id;
+
+        if (authorId) {
+            this.setState({
+                author: AuthorAPI.getAuthorById(authorId)
+            });
+        }
+
+    },
+    componentDidMount: function() {
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+    },
+    routerWillLeave: function(nextLocation) {
+        // return false to prevent a transition w/o prompting the user,
+        // or return a string to allow the user to decide:
+        if (!this.state.isSaved) {
+            return 'Your work is not saved! Are you sure you want to leave?';
+        }
     },
     setAuthorState: function(event) {
         var field = event.target.name;
         var value = event.target.value;
         this.state.author[field] = value;
-        return this.setState({author: this.state.author});
+        return this.setState({author: this.state.author, isSaved: false});
     },
     isAuthorFormValid: function() {
         var formValid = true;
@@ -70,8 +91,8 @@ var ManageAuthorPage = React.createClass({
                 lastName: this.state.author.lastName
             })
         }).then(function(responseObj) {
-            console.log('response status =' + responseObj.status);
             if (responseObj.status == 200) {
+                _alert.setState({isSaved: true});
                 _alert.addAlert('Author Added', 'Success');
             } else if (responseObj.status > 400) {
                 _alert.addAlert('Failed post to: ' + postUrl + ' - ' + responseObj.statusText, 'Error');
