@@ -57559,21 +57559,30 @@ var React = require('react');
 var TextInput = require('../common/textInput.jsx');
 
 var AuthorForm = React.createClass({displayName: "AuthorForm",
-   render: function() {
-       return(
+    propTypes: {
+        author: React.PropTypes.object.isRequired,
+        onSave: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        errors: React.PropTypes.object
+    },
+
+    render: function() {
+        return(
            React.createElement("form", null,
                React.createElement(TextInput, {
                    name: "firstName",
                    label: "First Name",
                    value: this.props.author.firstName,
-                   onChange: this.props.onChange}
+                   onChange: this.props.onChange,
+                   errors: this.props.errors.firstName}
                 ),
 
                React.createElement(TextInput, {
                    name: "lastName",
                    label: "Last Name",
                    value: this.props.author.lastName,
-                   onChange: this.props.onChange}
+                   onChange: this.props.onChange,
+                   errors: this.props.errors.lastName}
                ),
 
                React.createElement("br", null),
@@ -57595,6 +57604,7 @@ module.exports = AuthorForm;
 "use strict";
 
 var React = require('react');
+var Link = require('react-router').Link;
 
 var AuthorList = React.createClass({displayName: "AuthorList",
     propTypes: {
@@ -57604,7 +57614,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
         var createAuthorRow = function(author) {
             return (
                 React.createElement("tr", {key: author.id}, 
-                    React.createElement("td", null, React.createElement("a", {href: "/#authors/"+author.id}, author.id)), 
+                    React.createElement("td", null, React.createElement(Link, {to: {pathname: '/authors/'+author.id}}, author.id)),
                     React.createElement("td", null, author.firstName, " ", author.lastName)
                 )
             );
@@ -57627,7 +57637,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList;
 
-},{"react":391}],402:[function(require,module,exports){
+},{"react":391,"react-router":352}],402:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -57672,16 +57682,63 @@ var AuthorAPI = require('../../api/authorAPI.jsx');
 
 var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
     getInitialState: function() {
-        return { author: {id:'', firstName:'', lastName:''}};
+        return {
+            author: {id:'', firstName:'', lastName:''},
+            errors: {},
+            isSaved: false
+        };
+    },
+    componentWillMount: function() {
+        var authorId = this.props.params.id;
+
+        if (authorId) {
+            this.setState({
+                author: AuthorAPI.getAuthorById(authorId)
+            });
+        }
+
+    },
+    componentDidMount: function() {
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+    },
+    routerWillLeave: function(nextLocation) {
+        // return false to prevent a transition w/o prompting the user,
+        // or return a string to allow the user to decide:
+        if (!this.state.isSaved) {
+            return 'Your work is not saved! Are you sure you want to leave?';
+        }
     },
     setAuthorState: function(event) {
         var field = event.target.name;
         var value = event.target.value;
         this.state.author[field] = value;
-        return this.setState({author: this.state.author});
+        return this.setState({author: this.state.author, isSaved: false});
+    },
+    isAuthorFormValid: function() {
+        var formValid = true;
+        this.state.errors = {};
+
+
+
+        if (this.state.author.firstName.length == 0) {
+            this.state.errors.firstName = "First name cannot be empty";
+            formValid = false;
+        }
+
+        if (this.state.author.lastName.length == 0) {
+            this.state.errors.lastName = "Last name cannot be empty";
+            formValid = false;
+        }
+
+        this.setState({errors: this.state.errors});
+
+        return formValid;
     },
     saveAuthor: function(event) {
         event.preventDefault();
+        if (!this.isAuthorFormValid()) {
+            return;
+        }
         AuthorAPI.saveAuthor(this.state.author);
         this.sendFormData();
     },
@@ -57708,12 +57765,14 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
         }).then(function(responseObj) {
             console.log('response status =' + responseObj.status);
             if (responseObj.status == 200) {
+                _alert.setState({isSaved: true});
+                console.log("save status = " + JSON.stringify(_alert.state));
                 _alert.addAlert('Author Added', 'Success');
             } else if (responseObj.status > 400) {
                 _alert.addAlert('Failed post to: ' + postUrl + ' - ' + responseObj.statusText, 'Error');
             }
         }).catch(function(err) {
-	       _alert.addAlert('Blah Failed to add Author', 'Error');
+	       _alert.addAlert('Failed to add Author', 'Error');
         });
         /*
             UNCOMMENT THIS SECTION. If you want the server to persist the latest data, you can
@@ -57738,7 +57797,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
                         toastMessageFactory: ToastMessageFactory,
                         className: "toast-top-right"}),
                 React.createElement("h1", null, "Manage Author Page"),
-                React.createElement(AuthorForm, {author: this.state.author, onChange: this.setAuthorState, onSave: this.saveAuthor})
+                React.createElement(AuthorForm, {author: this.state.author, onChange: this.setAuthorState, onSave: this.saveAuthor, errors: this.state.errors})
             )
         );
     }
@@ -57789,7 +57848,7 @@ var textInput = React.createClass({displayName: "textInput",
     },
     render: function() {
         var wrapperClass = 'form-group';
-        if (this.props.error && this.props.error.length > 0) {
+        if (this.props.errors && this.props.errors.length > 0) {
             wrapperClass += " " + 'has-error';
         }
         return (
@@ -57806,7 +57865,7 @@ var textInput = React.createClass({displayName: "textInput",
                         value: this.props.value}
                     )
                 ),
-                React.createElement("div", {className: "input"}, this.props.error)
+                React.createElement("div", {className: "input"}, this.props.errors)
             )
         );
     }
@@ -57888,12 +57947,14 @@ var About = require('./components/about/aboutPage.jsx');
 var Authors = require('./components/authors/authorPage.jsx');
 var FourOFour = require('./components/PageNotFound.jsx');
 var ManageAuthorPage = require('./components/authors/manageAuthorPage.jsx');
+var confirmTransition = ManageAuthorPage.confirmTransition;
 
 var routes = (
     React.createElement(Route, {path: "/", component: App},
         React.createElement(IndexRoute, {component: Home}),
         React.createElement(Route, {path: "authors", component: Authors}), 
         React.createElement(Route, {path: "addAuthor", component: ManageAuthorPage}),
+            React.createElement(Route, {path: "/authors/:id", component: ManageAuthorPage}),
         React.createElement(Route, {path: "about", component: About}),
         React.createElement(Route, {path: "*", component: FourOFour}),
         React.createElement(Redirect, {from: "/*", to: "about"})
