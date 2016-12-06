@@ -1,6 +1,10 @@
 "use strict";
 
 var React = require('react');
+var ReactToastr = require("react-toastr");
+var ToastContainer = ReactToastr.ToastContainer; // This is a React Element.
+var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
+
 var AuthorForm = require('./authorForm.jsx');
 var AuthorAPI = require('../../api/authorAPI.jsx');
 
@@ -18,11 +22,17 @@ var ManageAuthorPage = React.createClass({
         event.preventDefault();
         AuthorAPI.saveAuthor(this.state.author);
         this.sendFormData();
-        // Uncomment below to post the author data to the server for persistence
-        // this.setState({type: 'hello' }, this.sendFormData);
+    },
+    addAlert: function(message, condition) {
+        this.refs.container.success(message, condition, {
+            closeButton: true,
+        });
     },
     sendFormData: function () {
-        fetch('/postAuthor', {
+        var _alert = this;
+        var postUrl = '/postAuthor';
+
+        fetch(postUrl, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -33,8 +43,28 @@ var ManageAuthorPage = React.createClass({
                 firstName: this.state.author.firstName,
                 lastName: this.state.author.lastName
             })
+        }).then(function(responseObj) {
+            console.log('response status =' + responseObj.status);
+            if (responseObj.status == 200) {
+                _alert.addAlert('Author Added', 'Success');
+            } else if (responseObj.status > 400) {
+                _alert.addAlert('Failed post to: ' + postUrl + ' - ' + responseObj.statusText, 'Error');
+            }
+        }).catch(function(err) {
+	       _alert.addAlert('Failed to add Author', 'Error');
         });
-        /*.then(function(responseObj) {
+        /*
+            UNCOMMENT THIS SECTION. If you want the server to persist the latest data, you can
+            create a new Response object and BODY as follows :
+            With a Response you can configure:
+                type - basic, cors
+                url
+                useFinalURL - Boolean for if url is the final URL
+                status - status code (ex: 200, 404, etc.)
+                ok - Boolean for successful response (status in the range 200-299)
+                statusText - status code (ex: OK)
+                headers - Headers object associated with the response.
+            .then(function(responseObj) {
             window.location.href = '/authors';
         });
         */
@@ -42,6 +72,9 @@ var ManageAuthorPage = React.createClass({
     render: function() {
         return(
             <div>
+                <ToastContainer ref="container"
+                        toastMessageFactory={ToastMessageFactory}
+                        className="toast-top-right" />
                 <h1>Manage Author Page</h1>
                 <AuthorForm author={this.state.author} onChange={this.setAuthorState} onSave={this.saveAuthor} />
             </div>
