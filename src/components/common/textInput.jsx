@@ -13,7 +13,7 @@ var textInput = React.createClass({
     },
     render: function() {
         var wrapperClass = 'form-group';
-        if (this.props.error && this.props.error.length > 0) {
+        if (this.props.errors && this.props.errors.length > 0) {
             wrapperClass += " " + 'has-error';
         }
         return (
@@ -30,7 +30,7 @@ var textInput = React.createClass({
                         value={this.props.value}
                     />
                 </div>
-                <div className="input">{this.props.error}</div>
+                <div className="input">{this.props.errors}</div>
             </div>
         );
     }

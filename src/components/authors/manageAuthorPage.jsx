@@ -10,7 +10,10 @@ var AuthorAPI = require('../../api/authorAPI.jsx');
 
 var ManageAuthorPage = React.createClass({
     getInitialState: function() {
-        return { author: {id:'', firstName:'', lastName:''}};
+        return {
+            author: {id:'', firstName:'', lastName:''},
+            errors: {}
+        };
     },
     setAuthorState: function(event) {
         var field = event.target.name;
@@ -18,8 +21,31 @@ var ManageAuthorPage = React.createClass({
         this.state.author[field] = value;
         return this.setState({author: this.state.author});
     },
+    isAuthorFormValid: function() {
+        var formValid = true;
+        this.state.errors = {};
+
+
+
+        if (this.state.author.firstName.length == 0) {
+            this.state.errors.firstName = "First name cannot be empty";
+            formValid = false;
+        }
+
+        if (this.state.author.lastName.length == 0) {
+            this.state.errors.lastName = "Last name cannot be empty";
+            formValid = false;
+        }
+
+        this.setState({errors: this.state.errors});
+
+        return formValid;
+    },
     saveAuthor: function(event) {
         event.preventDefault();
+        if (!this.isAuthorFormValid()) {
+            return;
+        }
         AuthorAPI.saveAuthor(this.state.author);
         this.sendFormData();
     },
@@ -76,7 +102,7 @@ var ManageAuthorPage = React.createClass({
                         toastMessageFactory={ToastMessageFactory}
                         className="toast-top-right" />
                 <h1>Manage Author Page</h1>
-                <AuthorForm author={this.state.author} onChange={this.setAuthorState} onSave={this.saveAuthor} />
+                <AuthorForm author={this.state.author} onChange={this.setAuthorState} onSave={this.saveAuthor} errors={this.state.errors} />
             </div>
         );
     }

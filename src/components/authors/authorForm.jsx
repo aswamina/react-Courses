@@ -12,6 +12,7 @@ var AuthorForm = React.createClass({
                    label="First Name"
                    value={this.props.author.firstName}
                    onChange={this.props.onChange}
+                   errors={this.props.errors.firstName}
                 />
 
                <TextInput
@@ -19,6 +20,7 @@ var AuthorForm = React.createClass({
                    label="Last Name"
                    value={this.props.author.lastName}
                    onChange={this.props.onChange}
+                   errors={this.props.errors.lastName}
                />
 
                <br></br>
