@@ -1,12 +1,13 @@
 "use strict";
 
 var React = require('react');
-var ReactToastr = require("react-toastr");
+var ReactToastr = require('react-toastr');
 var ToastContainer = ReactToastr.ToastContainer; // This is a React Element.
 var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
 
 var AuthorForm = require('./authorForm.jsx');
-var AuthorAPI = require('../../api/authorAPI.jsx');
+var AuthorActions = require('../../actions/authorActions.jsx');
+var AuthorStore = require('../../stores/authorStore.jsx');
 
 var ManageAuthorPage = React.createClass({
     getInitialState: function() {
@@ -21,7 +22,7 @@ var ManageAuthorPage = React.createClass({
 
         if (authorId) {
             this.setState({
-                author: AuthorAPI.getAuthorById(authorId)
+                author: AuthorStore.getAuthorById(authorId)
             });
         }
 
@@ -67,12 +68,21 @@ var ManageAuthorPage = React.createClass({
         if (!this.isAuthorFormValid()) {
             return;
         }
-        AuthorAPI.saveAuthor(this.state.author);
+        console.log("author id here = " + this.state.author.id);
+        if (this.state.author.id) {
+            AuthorActions.updateAuthor(this.state.author);
+        } else {
+            AuthorActions.createAuthor(this.state.author);
+        }
+
         this.sendFormData();
     },
     addAlert: function(message, condition) {
         this.refs.container.success(message, condition, {
             closeButton: true,
+            handleOnClick: function() {
+                //window.location.href = '/authors';
+            }
         });
     },
     sendFormData: function () {
@@ -91,7 +101,7 @@ var ManageAuthorPage = React.createClass({
                 lastName: this.state.author.lastName
             })
         }).then(function(responseObj) {
-            if (responseObj.status == 200) {
+            if (responseObj.status === 200) {
                 _alert.setState({isSaved: true});
                 _alert.addAlert('Author Added', 'Success');
             } else if (responseObj.status > 400) {
@@ -119,9 +129,7 @@ var ManageAuthorPage = React.createClass({
     render: function() {
         return(
             <div>
-                <ToastContainer ref="container"
-                        toastMessageFactory={ToastMessageFactory}
-                        className="toast-top-right" />
+                <ToastContainer ref="container" toastMessageFactory={ToastMessageFactory} className="toast-top-right" />
                 <h1>Manage Author Page</h1>
                 <AuthorForm author={this.state.author} onChange={this.setAuthorState} onSave={this.saveAuthor} errors={this.state.errors} />
             </div>
