@@ -11,6 +11,22 @@ var CourseList = React.createClass({
     propTypes: {
       courses: React.PropTypes.array.isRequired
     },
+    watchCourse: function(url, event) {
+        event.preventDefault();
+        this.refs.container.success('Click to leave site and open course in a new tab ...',
+                                    'Success',
+                                    {
+                                        closeButton: true,
+                                        handleOnClick: function () {
+                                            window.open(url,'_blank');
+                                        }
+                                    });
+    },
+    deleteCourse: function(id, event) {
+        event.preventDefault();
+        // CourseActions.deleteCourse(id);
+        this.refs.container.success('Course Deleted', 'Success', { closeButton: true });
+    },
     render: function() {
         var createCourseRow = function(course) {
             return (
@@ -20,6 +36,8 @@ var CourseList = React.createClass({
                     <td>{course.author.name}</td>
                     <td>{course.category}</td>
                     <td>{course.length}</td>
+                    <td><button type="button" className="btn btn-info" onClick={this.watchCourse.bind(this, course.watchHref)}>Watch</button></td>
+                    <td><button type="button" className="btn btn-danger" onClick={this.deleteCourse.bind(this, course.id)}>Delete</button></td>
                 </tr>
             );
         };

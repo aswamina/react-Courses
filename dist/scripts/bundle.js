@@ -58655,6 +58655,22 @@ var CourseList = React.createClass({displayName: "CourseList",
     propTypes: {
       courses: React.PropTypes.array.isRequired
     },
+    watchCourse: function(url, event) {
+        event.preventDefault();
+        this.refs.container.success('Course being opened in a new tab ...',
+                                    'Success',
+                                    {
+                                        closeButton: true,
+                                        handleOnClick: function () {
+                                            window.open(url,'_blank');
+                                        }
+                                    });
+    },
+    deleteCourse: function(id, event) {
+        event.preventDefault();
+        // CourseActions.deleteCourse(id);
+        this.refs.container.success('Course Deleted', 'Success', { closeButton: true });
+    },
     render: function() {
         var createCourseRow = function(course) {
             return (
@@ -58663,7 +58679,9 @@ var CourseList = React.createClass({displayName: "CourseList",
                     React.createElement("td", null, course.title),
                     React.createElement("td", null, course.author.name),
                     React.createElement("td", null, course.category),
-                    React.createElement("td", null, course.length)
+                    React.createElement("td", null, course.length),
+                    React.createElement("td", null, React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.watchCourse.bind(this, course.watchHref)}, "Watch")),
+                    React.createElement("td", null, React.createElement("button", {type: "button", className: "btn btn-danger", onClick: this.deleteCourse.bind(this, course.id)}, "Delete"))
                 )
             );
         };
@@ -58798,8 +58816,7 @@ var routes = (
         React.createElement(Route, {path: "addAuthor", component: ManageAuthorPage}),
             React.createElement(Route, {path: "/authors/:id", component: ManageAuthorPage}),
         React.createElement(Route, {path: "about", component: About}),
-        React.createElement(Route, {path: "*", component: FourOFour}),
-        React.createElement(Redirect, {from: "/*", to: "about"})
+        React.createElement(Route, {path: "/*", component: FourOFour})
     )
 );
 

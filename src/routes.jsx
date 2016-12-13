@@ -24,8 +24,7 @@ var routes = (
         <Route path="addAuthor" component={ManageAuthorPage} />
             <Route path="/authors/:id" component={ManageAuthorPage} />
         <Route path="about" component={About} />
-        <Route path="*" component={FourOFour} />
-        <Redirect from="/*" to="about" />
+        <Route path="/*" component={FourOFour} />
     </Route>
 );
 
