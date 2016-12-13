@@ -58040,7 +58040,7 @@ var AuthorActions = {
 
 module.exports = AuthorActions;
 
-},{"../api/authorAPI.jsx":401,"../constants/actionTypes.jsx":414,"../dispatcher/appDispatcher.jsx":415}],400:[function(require,module,exports){
+},{"../api/authorAPI.jsx":401,"../constants/actionTypes.jsx":418,"../dispatcher/appDispatcher.jsx":419}],400:[function(require,module,exports){
 "use strict";
 
 var Dispatcher = require('../dispatcher/appDispatcher.jsx');
@@ -58060,7 +58060,7 @@ var InitializeActions = {
 
 module.exports = InitializeActions;
 
-},{"../api/authorAPI.jsx":401,"../constants/actionTypes.jsx":414,"../dispatcher/appDispatcher.jsx":415}],401:[function(require,module,exports){
+},{"../api/authorAPI.jsx":401,"../constants/actionTypes.jsx":418,"../dispatcher/appDispatcher.jsx":419}],401:[function(require,module,exports){
 "use strict";
 
 //This file is mocking a web API by hitting hard coded data.
@@ -58137,6 +58137,105 @@ module.exports = {
 },{}],403:[function(require,module,exports){
 "use strict";
 
+//This file is mocking a web API by hitting hard coded data.
+var courses = require('./courseData.jsx').courses;
+var _ = require('lodash');
+
+//This would be performed on the server in a real app. Just stubbing in.
+var _generateId = function(course) {
+	return course.title.replace(' ', '-');
+};
+
+var _clone = function(item) {
+	return JSON.parse(JSON.stringify(item)); //return cloned copy so that the item is passed by value instead of by reference
+};
+
+var CourseApi = {
+	getAllCourses: function() {
+		return _clone(courses);
+	},
+
+	getCoursesById: function(id) {
+		var course = _.find(courses, {id: id});
+		return _clone(course);
+	},
+
+	saveCourse: function(course) {
+		console.log('Imagine saving course via AJAX call...');
+
+		if (course.id) {
+			var existingCourseIndex = _.indexOf(courses, _.find(courses, {id: course.id}));
+			courses.splice(existingCourseIndex, 1, course);
+		} else {
+			//just simulating creation here. This data
+			//would be generated on the server in a real app.
+			course.id = _generateId(course);
+			courses.push(_clone(course));
+		}
+		return course;
+	},
+
+	deleteCourse: function(id) {
+		console.log('Imagine deleting course with id of ' + id + ' via AJAX call...');
+		_.remove(courses, { id: id});
+	}
+};
+
+module.exports = CourseApi;
+
+},{"./courseData.jsx":404,"lodash":188}],404:[function(require,module,exports){
+module.exports = {
+	courses: [
+		{
+			id: "clean-code",
+			title: "Clean Code: Writing Code for Humans",
+			watchHref: "http://www.pluralsight.com/courses/writing-clean-code-humans",
+			author: {
+				id: "cory-house",
+				name: "Cory House"
+			},
+			length: "3:10",
+			category: "Software Practices"
+		},
+		{
+			id: "architecture",
+			title: "Architecting Applications for the Real World",
+			watchHref: "http://www.pluralsight.com/courses/architecting-applications-dotnet",
+			author: {
+				id: "cory-house",
+				name: "Cory House"
+			},
+			length: "2:52",
+			category: "Software Architecture"
+		},
+		{
+			id: "career-reboot-for-developer-mind",
+			title: "Becoming an Outlier: Reprogramming the Developer Mind",
+			watchHref: "http://www.pluralsight.com/courses/career-reboot-for-developer-mind",
+			author: {
+				id: "cory-house",
+				name: "Cory House"
+			},
+			length: "2:30",
+			category: "Career"
+		},
+		{
+			id: "web-components-shadow-dom",
+			title: "Web Component Fundamentals",
+			watchHref: "http://www.pluralsight.com/courses/web-components-shadow-dom",
+			author: {
+				id: "cory-house",
+				name: "Cory House"
+			},
+			length: "5:10",
+			category: "HTML5"
+		}
+	]
+};
+
+},{}],405:[function(require,module,exports){
+"use strict";
+
 var React = require('react');
 var Link = require('react-router').Link;
 
@@ -58150,7 +58249,7 @@ var NavLink = React.createClass({displayName: "NavLink",
 
 module.exports = NavLink;
 
-},{"react":396,"react-router":357}],404:[function(require,module,exports){
+},{"react":396,"react-router":357}],406:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58170,7 +58269,7 @@ var PageNotFound = React.createClass({displayName: "PageNotFound",
 
 module.exports = PageNotFound;
 
-},{"react":396,"react-router":357}],405:[function(require,module,exports){
+},{"react":396,"react-router":357}],407:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58196,7 +58295,7 @@ var About = React.createClass({displayName: "About",
 
 module.exports = About;
 
-},{"react":396}],406:[function(require,module,exports){
+},{"react":396}],408:[function(require,module,exports){
 /*eslint-disable strict*/   //Disabling check for this one file
 
 $ = jQuery = require('jquery');
@@ -58218,7 +58317,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./common/header.jsx":411,"jquery":48,"react":396,"react-router":357}],407:[function(require,module,exports){
+},{"./common/header.jsx":413,"jquery":48,"react":396,"react-router":357}],409:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58246,7 +58345,7 @@ var AuthorForm = React.createClass({displayName: "AuthorForm",
 
 module.exports = AuthorForm;
 
-},{"../common/textInput.jsx":412,"react":396}],408:[function(require,module,exports){
+},{"../common/textInput.jsx":414,"react":396}],410:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58296,7 +58395,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList;
 
-},{"../../actions/authorActions.jsx":399,"react":396,"react-router":357,"react-toastr":368}],409:[function(require,module,exports){
+},{"../../actions/authorActions.jsx":399,"react":396,"react-router":357,"react-toastr":368}],411:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58331,7 +58430,7 @@ var AuthorPage = React.createClass({displayName: "AuthorPage",
 
 module.exports = AuthorPage;
 
-},{"../../stores/authorStore.jsx":418,"./authorList.jsx":408,"react":396,"react-router":357}],410:[function(require,module,exports){
+},{"../../stores/authorStore.jsx":422,"./authorList.jsx":410,"react":396,"react-router":357}],412:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58473,7 +58572,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
 
 module.exports = ManageAuthorPage;
 
-},{"../../actions/authorActions.jsx":399,"../../stores/authorStore.jsx":418,"./authorForm.jsx":407,"react":396,"react-toastr":368}],411:[function(require,module,exports){
+},{"../../actions/authorActions.jsx":399,"../../stores/authorStore.jsx":422,"./authorForm.jsx":409,"react":396,"react-toastr":368}],413:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58490,7 +58589,8 @@ var Header = React.createClass({displayName: "Header",
                     React.createElement("ul", {className: "nav navbar-nav"}, 
                         React.createElement("li", null, React.createElement(Link, {to: "/"}, "Home")),
                         React.createElement("li", null, React.createElement(NavLink, {to: "about"}, "About")),
-                        React.createElement("li", null, React.createElement(NavLink, {to: "authors"}, "Authors"))
+                        React.createElement("li", null, React.createElement(NavLink, {to: "authors"}, "Authors")),
+                        React.createElement("li", null, React.createElement(NavLink, {to: "courses"}, "Courses"))
                     )
                 )
             )
@@ -58500,7 +58600,7 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header;
 
-},{"../NavLink.jsx":403,"react":396,"react-router":357}],412:[function(require,module,exports){
+},{"../NavLink.jsx":405,"react":396,"react-router":357}],414:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58541,7 +58641,81 @@ var textInput = React.createClass({displayName: "textInput",
 
 module.exports = textInput;
 
-},{"react":396}],413:[function(require,module,exports){
+},{"react":396}],415:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var Link = require('react-router').Link;
+var ReactToastr = require('react-toastr');
+var ToastContainer = ReactToastr.ToastContainer; // This is a React Element.
+var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
+
+
+var CourseList = React.createClass({displayName: "CourseList",
+    propTypes: {
+      courses: React.PropTypes.array.isRequired
+    },
+    render: function() {
+        var createCourseRow = function(course) {
+            return (
+                React.createElement("tr", {key: course.id},
+                    React.createElement("td", null, React.createElement(Link, {to: {pathname:'/courses/'+course.id}}, course.id)),
+                    React.createElement("td", null, course.title),
+                    React.createElement("td", null, course.author.name),
+                    React.createElement("td", null, course.category),
+                    React.createElement("td", null, course.length)
+                )
+            );
+        };
+        return (
+            React.createElement("div", {className: "col-sm-10"},
+                React.createElement(ToastContainer, {ref: "container", toastMessageFactory: ToastMessageFactory, className: "toast-top-right"}),
+                React.createElement("table", {className: "table"},
+                    React.createElement("tbody", null,
+                    React.createElement("tr", null,
+                        React.createElement("th", null, "ID"),
+                        React.createElement("th", null, "Title"),
+                        React.createElement("th", null, "Author"),
+                        React.createElement("th", null, "Category"),
+                        React.createElement("th", null, "Length"),
+                        React.createElement("th", null, React.createElement(Link, {to: "addCourse", className: "btn btn-primary"}, "Add Course"))
+                    ),
+                    this.props.courses.map(createCourseRow, this)
+                    )
+                )
+            )
+        );
+    }
+});
+
+module.exports = CourseList;
+
+},{"react":396,"react-router":357,"react-toastr":368}],416:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var CourseAPI = require('../../api/courseAPI.jsx');
+var CourseList = require('./courseList.jsx');
+
+var Courses = React.createClass({displayName: "Courses",
+    getInitialState: function() {
+        return {
+            courses: CourseAPI.getAllCourses()
+        };
+    },
+    render: function() {
+        return (
+            React.createElement("div", null,
+                React.createElement("h1", null, "Courses"),
+                React.createElement(CourseList, {courses: this.state.courses})
+            )
+        );
+    }
+});
+
+module.exports = Courses;
+
+},{"../../api/courseAPI.jsx":403,"./courseList.jsx":415,"react":396}],417:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58559,7 +58733,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home;
 
-},{"react":396}],414:[function(require,module,exports){
+},{"react":396}],418:[function(require,module,exports){
 "use strict";
 
 var keyMirror = require('keyMirror');
@@ -58571,14 +58745,14 @@ module.exports = keyMirror({
     DELETE_AUTHOR: null
 });
 
-},{"keyMirror":49}],415:[function(require,module,exports){
+},{"keyMirror":49}],419:[function(require,module,exports){
 // Using Facebook's Dispatcher which is a singleton per application
 
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":27}],416:[function(require,module,exports){
+},{"flux":27}],420:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58597,7 +58771,7 @@ ReactDOM.render(
     document.getElementById('app')
 );
 
-},{"./actions/initializeActions.jsx":400,"./routes.jsx":417,"react":396,"react-dom":203,"react-router":357}],417:[function(require,module,exports){
+},{"./actions/initializeActions.jsx":400,"./routes.jsx":421,"react":396,"react-dom":203,"react-router":357}],421:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58611,6 +58785,7 @@ var App = require('./components/app.jsx');
 var Home = require('./components/homePage.jsx');
 var About = require('./components/about/aboutPage.jsx');
 var Authors = require('./components/authors/authorPage.jsx');
+var Courses = require('./components/courses/coursePage.jsx');
 var FourOFour = require('./components/PageNotFound.jsx');
 var ManageAuthorPage = require('./components/authors/manageAuthorPage.jsx');
 var confirmTransition = ManageAuthorPage.confirmTransition;
@@ -58619,6 +58794,7 @@ var routes = (
     React.createElement(Route, {path: "/", component: App},
         React.createElement(IndexRoute, {component: Home}),
         React.createElement(Route, {path: "authors", component: Authors}), 
+        React.createElement(Route, {path: "courses", component: Courses}),
         React.createElement(Route, {path: "addAuthor", component: ManageAuthorPage}),
             React.createElement(Route, {path: "/authors/:id", component: ManageAuthorPage}),
         React.createElement(Route, {path: "about", component: About}),
@@ -58629,7 +58805,7 @@ var routes = (
 
 module.exports = routes;
 
-},{"./components/PageNotFound.jsx":404,"./components/about/aboutPage.jsx":405,"./components/app.jsx":406,"./components/authors/authorPage.jsx":409,"./components/authors/manageAuthorPage.jsx":410,"./components/homePage.jsx":413,"react":396,"react-router":357}],418:[function(require,module,exports){
+},{"./components/PageNotFound.jsx":406,"./components/about/aboutPage.jsx":407,"./components/app.jsx":408,"./components/authors/authorPage.jsx":411,"./components/authors/manageAuthorPage.jsx":412,"./components/courses/coursePage.jsx":416,"./components/homePage.jsx":417,"react":396,"react-router":357}],422:[function(require,module,exports){
 "use strict";
 
 var assign = require('object-assign');
@@ -58688,4 +58864,4 @@ Dispatcher.register(function(action) {
 
 module.exports = AuthorStore;
 
-},{"../constants/actionTypes.jsx":414,"../dispatcher/appDispatcher.jsx":415,"events":3,"lodash":188,"object-assign":198}]},{},[416]);
+},{"../constants/actionTypes.jsx":418,"../dispatcher/appDispatcher.jsx":419,"events":3,"lodash":188,"object-assign":198}]},{},[420]);

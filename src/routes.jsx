@@ -11,6 +11,7 @@ var App = require('./components/app.jsx');
 var Home = require('./components/homePage.jsx');
 var About = require('./components/about/aboutPage.jsx');
 var Authors = require('./components/authors/authorPage.jsx');
+var Courses = require('./components/courses/coursePage.jsx');
 var FourOFour = require('./components/PageNotFound.jsx');
 var ManageAuthorPage = require('./components/authors/manageAuthorPage.jsx');
 var confirmTransition = ManageAuthorPage.confirmTransition;
@@ -19,6 +20,7 @@ var routes = (
     <Route path="/" component={App}>
         <IndexRoute component={Home} />
         <Route path="authors" component={Authors} />
+        <Route path="courses" component={Courses} />
         <Route path="addAuthor" component={ManageAuthorPage} />
             <Route path="/authors/:id" component={ManageAuthorPage} />
         <Route path="about" component={About} />
