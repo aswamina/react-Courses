@@ -68,7 +68,7 @@ var ManageAuthorPage = React.createClass({
         if (!this.isAuthorFormValid()) {
             return;
         }
-        console.log("author id here = " + this.state.author.id);
+
         if (this.state.author.id) {
             AuthorActions.updateAuthor(this.state.author);
         } else {

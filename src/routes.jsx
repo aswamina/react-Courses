@@ -14,7 +14,8 @@ var Authors = require('./components/authors/authorPage.jsx');
 var Courses = require('./components/courses/coursePage.jsx');
 var FourOFour = require('./components/PageNotFound.jsx');
 var ManageAuthorPage = require('./components/authors/manageAuthorPage.jsx');
-var confirmTransition = ManageAuthorPage.confirmTransition;
+var ManageCoursePage = require('./components/courses/manageCoursePage.jsx');
+// var confirmTransition = ManageAuthorPage.confirmTransition;
 
 var routes = (
     <Route path="/" component={App}>
@@ -23,6 +24,7 @@ var routes = (
         <Route path="courses" component={Courses} />
         <Route path="addAuthor" component={ManageAuthorPage} />
             <Route path="/authors/:id" component={ManageAuthorPage} />
+        <Route path="addCourse" component={ManageCoursePage} />
         <Route path="about" component={About} />
         <Route path="/*" component={FourOFour} />
     </Route>

@@ -32,6 +32,18 @@ app.post('/postAuthor', function (req, res) {
     });
 });
 
+app.post('/postCourse', function (req, res) {
+    var id = req.body.id;
+    console.log('posted id=' + id);
+    console.log('title=' + req.body.title);
+    console.log('author=' + req.body.author);
+    console.log('category=' + req.body.category);
+    console.log('length=' + req.body.length);
+    return res.send({
+        status: 'OK'
+    });
+});
+
 var PORT = process.env.PORT || 5015
 app.listen(PORT, function () {
     console.log('Express server running at localhost:' + PORT)

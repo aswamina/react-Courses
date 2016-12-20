@@ -22,7 +22,8 @@ var config = {
         serverjs: './src/server.js',
         css: [
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
-            'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
+            'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
+            'node_modules/react-select/dist/react-select.css'
         ],
         dist: './dist'
     }

@@ -1,13 +1,13 @@
 "use strict";
 
 var React = require('react');
-var CourseAPI = require('../../api/courseAPI.jsx');
+var CourseStore = require('../../stores/courseStore.jsx');
 var CourseList = require('./courseList.jsx');
 
 var Courses = React.createClass({
     getInitialState: function() {
         return {
-            courses: CourseAPI.getAllCourses()
+            courses: CourseStore.getAllCourses()
         };
     },
     render: function() {

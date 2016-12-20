@@ -9,7 +9,7 @@ var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation
 
 var CourseList = React.createClass({
     propTypes: {
-      courses: React.PropTypes.array.isRequired
+        courses: React.PropTypes.array.isRequired
     },
     watchCourse: function(url, event) {
         event.preventDefault();
