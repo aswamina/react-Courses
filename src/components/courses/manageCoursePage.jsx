@@ -15,11 +15,11 @@ var ManageCoursePage = React.createClass({
             course: {
                 id:'',
                 title:'',
-                authors: CourseStore.getAllAuthors(),
+                author: {name: "", id: ""},
                 category: '',
-                length:'',
-                author:''
+                length:''
             },
+            authors: CourseStore.getAllAuthors(),
             errors: {},
             isSaved: false
         };
@@ -44,18 +44,19 @@ var ManageCoursePage = React.createClass({
         this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
     },
     setCourseState: function(event) {
-        debugger;
-        var field;
-        var value;
+        var field=event.target.name;
+        var value=event.target.value;
 
-        if (event.label != undefined) {
-            field = event.name;
-            value = event.value;
+        if (field === "author") {
+            var authorIndex=event.target.selectedIndex - 1;
+            this.state.course[field] = {
+                name: value,
+                id: this.state.authors[authorIndex].id
+            }
         } else {
-            field = event.target.name;
-            value = event.target.value;
+            this.state.course[field] = value;
         }
-        this.state.course[field] = value;
+
         return this.setState({course: this.state.course, isSaved: false});
     },
     isCourseFormValid: function() {
@@ -67,7 +68,7 @@ var ManageCoursePage = React.createClass({
             formValid = false;
         }
 
-        if (this.state.course.author.length == 0) {
+        if (this.state.course.author.name.length == 0) {
             this.state.errors.author = "Author cannot be empty";
             formValid = false;
         }
@@ -91,6 +92,7 @@ var ManageCoursePage = React.createClass({
         if (!this.isCourseFormValid()) {
             return;
         }
+
         if (this.state.course.id) {
             CourseActions.updateCourse(this.state.course);
         } else {
@@ -140,7 +142,7 @@ var ManageCoursePage = React.createClass({
             <div>
                 <ToastContainer ref="container" toastMessageFactory={ToastMessageFactory} className="toast-top-right" />
                 <h1>Manage Course Page</h1>
-                <CourseForm course={this.state.course} authors={this.state.course.authors} onChange={this.setCourseState} onSave={this.saveCourse} errors={this.state.errors} />
+                <CourseForm course={this.state.course} authors={this.state.authors} onChange={this.setCourseState} onSave={this.saveCourse} errors={this.state.errors} />
             </div>
        );
     }
