@@ -16,7 +16,7 @@ var CourseForm = React.createClass({
         return(
            <form>
                 <TextInput name="title" label="Title" value={this.props.course.title} onChange={this.props.onChange} errors={this.props.errors.title} />
-                <SelectInput name="author" label="Authors" authors={this.props.authors} onChange={this.props.onChange} errors={this.props.errors.author} />
+                <SelectInput name="author" label="Authors" value={this.props.course.author.name} authors={this.props.authors} onChange={this.props.onChange} errors={this.props.errors.author} />
                 <TextInput name="category" label="Category" value={this.props.course.category} onChange={this.props.onChange} errors={this.props.errors.category} />
                 <TextInput name="length" label="Length" value={this.props.course.length} onChange={this.props.onChange} errors={this.props.errors.length} />
                 <br></br>

@@ -58664,7 +58664,7 @@ var selectInput = React.createClass({displayName: "selectInput",
             React.createElement("div", {className: wrapperClass},
                React.createElement("label", {htmlFor: this.props.name}, this.props.label),
                 React.createElement("div", {className: "field"},
-                    React.createElement("select", {className: "form-control", name: this.props.name, onChange: this.props.onChange, defaultValue: ""},
+                    React.createElement("select", {className: "form-control", name: this.props.name, onChange: this.props.onChange, defaultValue: this.props.value},
                         React.createElement("option", {value: "", disabled: true}, "Select..."),
                         this.props.authors.map(createOptionRow, this)
                     )
@@ -58737,7 +58737,7 @@ var CourseForm = React.createClass({displayName: "CourseForm",
         return(
            React.createElement("form", null,
                 React.createElement(TextInput, {name: "title", label: "Title", value: this.props.course.title, onChange: this.props.onChange, errors: this.props.errors.title}),
-                React.createElement(SelectInput, {name: "author", label: "Authors", authors: this.props.authors, onChange: this.props.onChange, errors: this.props.errors.author}),
+                React.createElement(SelectInput, {name: "author", label: "Authors", value: this.props.course.author.name, authors: this.props.authors, onChange: this.props.onChange, errors: this.props.errors.author}),
                 React.createElement(TextInput, {name: "category", label: "Category", value: this.props.course.category, onChange: this.props.onChange, errors: this.props.errors.category}),
                 React.createElement(TextInput, {name: "length", label: "Length", value: this.props.course.length, onChange: this.props.onChange, errors: this.props.errors.length}),
                 React.createElement("br", null),
@@ -58758,6 +58758,7 @@ var ReactToastr = require('react-toastr');
 var ToastContainer = ReactToastr.ToastContainer; // This is a React Element.
 var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
 
+var CourseActions = require('../../actions/courseActions.jsx');
 
 var CourseList = React.createClass({displayName: "CourseList",
     propTypes: {
@@ -58776,7 +58777,7 @@ var CourseList = React.createClass({displayName: "CourseList",
     },
     deleteCourse: function(id, event) {
         event.preventDefault();
-        // CourseActions.deleteCourse(id);
+        CourseActions.deleteCourse(id);
         this.refs.container.success('Course Deleted', 'Success', { closeButton: true });
     },
     render: function() {
@@ -58816,7 +58817,7 @@ var CourseList = React.createClass({displayName: "CourseList",
 
 module.exports = CourseList;
 
-},{"react":396,"react-router":357,"react-toastr":368}],419:[function(require,module,exports){
+},{"../../actions/courseActions.jsx":400,"react":396,"react-router":357,"react-toastr":368}],419:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -58828,6 +58829,15 @@ var Courses = React.createClass({displayName: "Courses",
         return {
             courses: CourseStore.getAllCourses()
         };
+    },
+    componentWillMount: function() {
+        CourseStore.addChangeListener(this._onChange);
+    },
+    componentWillUnMount: function() {
+        CourseStore.removeChangeListener(this._onChange);
+    },
+    _onChange: function() {
+        this.setState({authors: CourseStore.getAllCourses()});
     },
     render: function() {
         return (
@@ -59081,6 +59091,7 @@ var routes = (
         React.createElement(Route, {path: "addAuthor", component: ManageAuthorPage}),
             React.createElement(Route, {path: "/authors/:id", component: ManageAuthorPage}),
         React.createElement(Route, {path: "addCourse", component: ManageCoursePage}),
+            React.createElement(Route, {path: "/courses/:id", component: ManageCoursePage}),
         React.createElement(Route, {path: "about", component: About}),
         React.createElement(Route, {path: "/*", component: FourOFour})
     )

@@ -10,6 +10,15 @@ var Courses = React.createClass({
             courses: CourseStore.getAllCourses()
         };
     },
+    componentWillMount: function() {
+        CourseStore.addChangeListener(this._onChange);
+    },
+    componentWillUnMount: function() {
+        CourseStore.removeChangeListener(this._onChange);
+    },
+    _onChange: function() {
+        this.setState({authors: CourseStore.getAllCourses()});
+    },
     render: function() {
         return (
             <div>

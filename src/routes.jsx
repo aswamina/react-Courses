@@ -25,6 +25,7 @@ var routes = (
         <Route path="addAuthor" component={ManageAuthorPage} />
             <Route path="/authors/:id" component={ManageAuthorPage} />
         <Route path="addCourse" component={ManageCoursePage} />
+            <Route path="/courses/:id" component={ManageCoursePage} />
         <Route path="about" component={About} />
         <Route path="/*" component={FourOFour} />
     </Route>

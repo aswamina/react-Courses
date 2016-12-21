@@ -22,7 +22,7 @@ var selectInput = React.createClass({
             <div className={wrapperClass}>
                <label htmlFor={this.props.name}>{this.props.label}</label>
                 <div className="field">
-                    <select className="form-control" name={this.props.name} onChange={this.props.onChange} defaultValue="">
+                    <select className="form-control" name={this.props.name} onChange={this.props.onChange} defaultValue={this.props.value}>
                         <option value="" disabled>Select...</option>
                         {this.props.authors.map(createOptionRow, this)}
                     </select>

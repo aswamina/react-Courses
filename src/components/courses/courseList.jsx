@@ -6,6 +6,7 @@ var ReactToastr = require('react-toastr');
 var ToastContainer = ReactToastr.ToastContainer; // This is a React Element.
 var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
 
+var CourseActions = require('../../actions/courseActions.jsx');
 
 var CourseList = React.createClass({
     propTypes: {
@@ -24,7 +25,7 @@ var CourseList = React.createClass({
     },
     deleteCourse: function(id, event) {
         event.preventDefault();
-        // CourseActions.deleteCourse(id);
+        CourseActions.deleteCourse(id);
         this.refs.container.success('Course Deleted', 'Success', { closeButton: true });
     },
     render: function() {
